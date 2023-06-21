@@ -40,6 +40,7 @@ char preread;
 float angL = 110;
 float angR = 70;
 float A,B,C;
+float dis = 50; //data[1] 가까움 척도(세부조정 필요)
 
 
 uint16_t ir_val[10];
@@ -254,7 +255,7 @@ void servo_move(PwmOut &rc){
     int count;
     if(gotPacket){
         count = count+1;
-        //pc.printf("data= %.3f, %.3f, %.3f, %C \n\r",data[0],data[1],data[2],preread);
+        pc.printf("data= %.3f, %.3f, %.3f, %C \n\r",data[0],data[1],data[2],preread);
         //board.printf("data= %.3f, %.3f, %.3f\n\r",data[0],data[1],data[2]);
         gotPacket = false;
 
@@ -305,10 +306,10 @@ void servo_move(PwmOut &rc){
 }
 
 void DC_follow(){
-        if(data[1]<170){
+        if(data[1]<dis){
             float delang = map<float>(abs(ang-90), 0. , 80. ,0.1 ,0.2 );
             float dellen = map<float>(data[1], 0. , 250. ,0. ,0.05 );
-            if(ang>10 && ang<70){
+            if(ang>10 && ang<70){//전부 다 최대치로 움직이게 변경 필요
                 A = 1;
                 B = -1.5;
                 C =0;
@@ -316,7 +317,7 @@ void DC_follow(){
             else if(ang>=70 && ang<=110){
                 A = 0;
                 B = 0;
-                C=0.3;
+                C= 0.3;
             }
             else if(ang>110 && ang<170){
                 A=-1.5;
@@ -326,19 +327,19 @@ void DC_follow(){
             speedL = 0.7 + A*delang+ A*dellen+C;
             speedR = 0.8 + B*delang + B*dellen+(C/0.3)*0.2;
         }
-        else if(data[1]>=170 && ang <=70 && ang>=110){
+        else if(data[1]>=dis && (ang <=70 || ang>=110)){
             if(ang<=70){
-                speedL = 0.7;
-                speedR = -0.45;
+                speedL = 0.4;
+                speedR = -1;
             }
             else if(ang>=110){
-                speedL = -0.45;
-                speedR = 0.7;
+                speedL = -1;
+                speedR = 0.4;
             }
         }
-        else if(data[1]>=170 && ang>=70 && ang<=110){
-                speedL =1;
-                speedR = 1;
+        else if(data[1]>=dis && ang>=70 && ang<=110){
+                speedL =0;
+                speedR = 0;
         }
         
 }
