@@ -13,7 +13,7 @@ extern AnalogIn irfm;
 extern AnalogIn irfmr;
 extern AnalogIn irfml;
 extern AnalogIn irmm;
-extern AnalogIn irbmr; 
+extern AnalogIn irbmr;
 extern AnalogIn irbml;
 
 extern AnalogIn psdfl;
@@ -30,6 +30,7 @@ extern PwmOut rcServo;
 extern float ang, inc,Inc,INC;
 extern char preread;
 extern int count;
+extern float dis;
 
 extern float angL;
 extern float angR;
@@ -56,6 +57,11 @@ extern bool ir_plusval[8];
 //4 bl+bml
 //5 br+bmr
 //6 all
+extern uint16_t psdfl_val;
+extern uint16_t psdfr_val;
+extern uint16_t psdm_val;
+extern uint16_t psdb_val;
+
 extern bool Serial_chk;
 extern bool code_start;
 
@@ -99,7 +105,7 @@ int main(){
         if(code_start == true){
             sensor_read();
             sensor_plus();
-            sensor_print2();
+            //sensor_print2();
             test_tmr.start();
             servo_move(rcServo);
             test_tmr.start();
@@ -122,7 +128,7 @@ int main(){
                 else if(ir_plusval[6]==true && ir_val[2]<black){
                     speedL = 0.0;
                     speedR = 0.0;
-                    mode=1;
+                    mode=3;
                     test_tmr.reset();
                 }//*/
             }
@@ -140,7 +146,7 @@ int main(){
 
             else if(mode ==1) {//원을 돌고 난 뒤 상태 (두 번째 안) 카메라 사용
                 if(ir_plusval[0]==false ){
-                    if(data[1]<170){//가깝지 않을 때 원타기
+                    if(data[1]<60){//가깝지 않을 때 원타기
                         speedL = 0.3;
                         speedR = 0.8;
                     }
@@ -148,25 +154,21 @@ int main(){
                         speedL = 1;
                         speedR = 1;
                     }
-                    else if(ir_plusval[0]==false &&ir_plusval[1]==false&&ir_plusval[2]==false&&ir_plusval[3]==false && data[1]<170){
+                    else if(ir_plusval[0]==false &&ir_plusval[1]==false&&ir_plusval[2]==false&&ir_plusval[3]==false){
                         DC_follow();
-                    }
-                    else if(ir_plusval[0]==false &&ir_plusval[1]==false&&ir_plusval[2]==false&&ir_plusval[3]==false && data[1]>170){
-                        speedL = 1;
-                        speedR = 1;
                     }
                 }
 
                 else if(ir_plusval[0]==true){//앞쪽 색영역 봤을 때
-                    if(data[1]>170 && ir_val[5]<black && ir_val[6]<black /*&& ir_val[8]>black && ir_val[9]>black/*/){
+                    if(data[1]>60 && ir_val[5]<black && ir_val[6]<black /*&& ir_val[8]>black && ir_val[9]>black/*/){
                         speedL = 0;
                         speedR = 0;
                     }
-                    else if(data[1]>170&&ir_val[5]>black && ir_val[6]>black){
+                    else if(data[1]>dis && ir_val[5]>black && ir_val[6]>black){
                         speedL = 1;
                         speedR = 1;
                     }
-                    else if(data[1]<170){
+                    else if(data[1]<dis){
                         speedL = 0.6;
                         speedR = -0.8;
                         
@@ -183,27 +185,33 @@ int main(){
             }//*/
 
             else if(mode == 19){//바퀴 4개 색영역(탈출 코드) psd 사용안함
-                if(ir_plusval[7]==false){
+                if(ir_plusval[0]==true){
+                    if(psdb_val < 30){
+                        while(ir_plusval[7] == false){
+                            speedL = 1;
+                            speedR = 1;
+                        }
+                        mode = 1;
+                    }
+                    else{
+                        speedL = -0.6; speedR = -0.6;
+                    }
+                }
+                else if(ir_plusval[7] == false){
+                    speedL = 0.5; speedR = 0.5;
                     mode = 1;
                 }
-                else if(ang<=70){
-                    speedL = 0.45;
-                    speedR = -0.45;
-                }
-                else if(ang>=110){
-                    speedL = -0.45;
-                    speedR = 0.45;
-                }
-                else if(data[1]>170 && data[0]>=70 && data[0]<=110){
-                    speedL =1;
-                    speedR =1;
-                }
-            }   
+            }
 
+            // else if(mode ==20){//벽에 부딪힐거같은 경우
+
+            // }
+            else if(mode == 3){//함수 확인용
+                DC_follow();
+            }
             whl_move();
-        }
-    
-    }
+        }//if(codestart = true)
+    }//while
 
-}
+}//main
 
