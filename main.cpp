@@ -105,7 +105,7 @@ int main(){
         if(code_start == true){
             sensor_read();
             sensor_plus();
-            //sensor_print2();
+            sensor_print2();
             test_tmr.start();
             servo_move(rcServo);
             test_tmr.start();
@@ -128,7 +128,7 @@ int main(){
                 else if(ir_plusval[6]==true && ir_val[2]<black){
                     speedL = 0.0;
                     speedR = 0.0;
-                    mode=3;
+                    mode=1;
                     test_tmr.reset();
                 }//*/
             }
@@ -145,7 +145,7 @@ int main(){
                 }//*/
 
             else if(mode ==1) {//원을 돌고 난 뒤 상태 (두 번째 안) 카메라 사용
-                if(ir_plusval[0]==false ){
+                if(ir_plusval[0]==false){
                     if(data[1]<60){//가깝지 않을 때 원타기
                         speedL = 0.3;
                         speedR = 0.8;
@@ -154,7 +154,7 @@ int main(){
                         speedL = 1;
                         speedR = 1;
                     }
-                    else if(ir_plusval[0]==false &&ir_plusval[1]==false&&ir_plusval[2]==false&&ir_plusval[3]==false){
+                    else if(ir_plusval[0]==false && (ir_plusval[1]==false || ir_plusval[2]==false ||ir_plusval[3]==false)){
                         DC_follow();
                     }
                 }
@@ -186,7 +186,7 @@ int main(){
 
             else if(mode == 19){//바퀴 4개 색영역(탈출 코드) psd 사용안함
                 if(ir_plusval[0]==true){
-                    if(psdb_val < 30){
+                    if(psdfl_val > 30){
                         while(ir_plusval[7] == false){
                             speedL = 1;
                             speedR = 1;
