@@ -14,11 +14,13 @@ AnalogIn irfml(PC_0);
 AnalogIn irbmr(PC_5); 
 AnalogIn irbml(PA_5);
 
-GP2A psdfl(PC_3, 30, 150, 60, 0);
+GP2A psdfl(PC_3, 20, 150, 60, 0);
+GP2A psdf(PA_1,7,80,22.5,0.1606);//실험할 때 쓴 psd값
+GP2A psdb(PA_7,20,150,60,0);
 //AnalogIn psdfl(PC_2);
 AnalogIn psdfr(PC_3);
 AnalogIn psdm(PC_4);
-AnalogIn psdb(PC_5);
+
 
 DigitalOut DirL(PC_7);
 DigitalOut DirR(PB_6);
@@ -94,8 +96,6 @@ int test_time = 600000;
 RawSerial board(PA_9, PA_10, 115200);
 RawSerial pc(USBTX,USBRX,115200);
 
-GP2A psdf(PA_1,7,80,22.5,0.1606);
-
 void sensor_read(){
         ir_val[0] = irfl.read_u16();
         ir_val[1] = irfr.read_u16();
@@ -111,7 +111,7 @@ void sensor_read(){
         psdfl_val = psdfl.getDistance();
         psdfr_val = psdfr.read_u16();
         psdm_val = psdm.read_u16();
-        psdb_val = psdb.read_u16();
+        psdb_val = psdb.getDistance();
 }
 
 void sensor_plus(){
@@ -129,8 +129,8 @@ void sensor_plus(){
     else ir_plusval[5] = false;
     if(ir_val[1]>black && ir_val[0]<black) ir_plusval[6] = true;
     else ir_plusval[6] = false;
-    if(ir_val[0]<black && ir_val[1]< black && ir_val[2]< black && ir_val[3]< black
-        && ir_val[5]< black && ir_val[6]< black){//ir_val[4]값 빠져있음
+    if(ir_val[0]>black && ir_val[1]>black && ir_val[2]> black && ir_val[3]> black
+        && ir_val[5]>black && ir_val[6]> black){//ir_val[4]값 빠져있음
             ir_plusval[7]=true;
         }
     else ir_plusval[7] = false;
