@@ -154,29 +154,50 @@ int main(){
                         speedL = 1;
                         speedR = 1;
                     }
-                    else if(ir_plusval[0]==false && (ir_plusval[1]==false || ir_plusval[2]==false ||ir_plusval[3]==false)){
+                    else if(ir_plusval[1]==false || ir_plusval[2]==false ||ir_plusval[3]==false){
                         DC_follow();
                     }
                 }
 
                 else if(ir_plusval[0]==true){//앞쪽 색영역 봤을 때
-                    if(data[1]>60 && ir_val[5]<black && ir_val[6]<black /*&& ir_val[8]>black && ir_val[9]>black/*/){
-                        speedL = 0;
-                        speedR = 0;
-                    }
-                    else if(data[1]>dis && ir_val[5]>black && ir_val[6]>black){
-                        speedL = 1;
-                        speedR = 1;
-                    }
-                    else if(data[1]<dis){
-                        speedL = 0.6;
-                        speedR = -0.8;
+                        if(psdfl_val >80 && psdfl_val <30){
+                            if(data[1]>dis && ir_val[5]<black && ir_val[6]<black /*&& ir_val[8]>black && ir_val[9]>black/*/){
+                            speedL = 0;
+                            speedR = 0;
+                            }
+                            else if(data[1]>dis && ir_val[5]>black && ir_val[6]>black){
+                                speedL = 1;
+                                speedR = 1;
+                            }
+                            else if(data[1]<dis){
+                                speedL = 0.6;
+                                speedR = -0.8;
                         
-                    }
-                    else if(ir_plusval[6]==true && ir_val[2]<black){
-                            speedL = 0.0;
-                            speedR = 0.0; 
-                    }
+                            }
+                            else if(ir_plusval[6]==true && ir_val[2]<black){
+                                speedL = 0.0;
+                                speedR = 0.0; 
+                            }
+                        }
+                        else if(psdfl_val <80 && psdfl_val >30){
+                                if(data[1]>dis && ir_val[5]<black && ir_val[6]<black /*&& ir_val[8]>black && ir_val[9]>black/*/){
+                                speedL = 0;
+                                speedR = 0;
+                                }
+                                else if(data[1]>dis && ir_val[5]>black && ir_val[6]>black){
+                                    speedL = 1;
+                                    speedR = 1;
+                                }
+                                else if(data[1]<dis){
+                                    speedL = 0.6;
+                                    speedR = -0.8;
+                        
+                                }
+                                else if(ir_plusval[6]==true && ir_val[2]<black){
+                                    speedL = 0.0;
+                                    speedR = 0.0; 
+                                }
+                        }
                         //mode=2;
                 }
                 else if(ir_plusval[7]==true){
