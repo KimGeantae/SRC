@@ -11,6 +11,7 @@
 
 #define psdcontroltime 50
 #define maincontroltime 10
+#define imu_time 50
 #define Alpha 0.8
 //#include "Servo.h"
 
@@ -39,9 +40,13 @@ void tmr_reset(Timer* _timer);
 extern double speedL;
 extern double speedR;
 
-void test_move(Timer* __timer, int*__tmr, double __speedL,double __speedR);
+void Rescape_move(Timer* __timer, int*__tmr, double __speedL,double __speedR);
 void escape(Timer* __timer, double*__tmr, double __speedL,double __speedR);
 void whl_move();
+
+void setup_mpu9250();
+//void imu_main();
+void imu_read();
 
 //이동평균필터
 //float MovingAveragefilter();
